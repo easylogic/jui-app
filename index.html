@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JUI App Builder</title>
+
+    <link rel="stylesheet" href="node_modules/jui/dist/ui.css" />
+    <link rel="stylesheet" href="node_modules/jui/dist/ui-dark.css" />
+    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid.css" />
+    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid-dark.css" />
+
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="node_modules/jui-core/dist/core.js"></script>
+    <script type="text/javascript" src="node_modules/jui/dist/ui.js"></script>
+    <script type="text/javascript" src="node_modules/jui-chart/dist/chart.js"></script>
+    <script type="text/javascript" src="node_modules/jui-grid/dist/grid.js"></script>
+
+    <script type="text/javascript" src="src/component/core.js"></script>
+    <script type="text/javascript" src="src/component/menubar.js"></script>
+    <script type="text/javascript" src="src/component/toolbar.js"></script>
+    <script type="text/javascript" src="src/component/toolbuttons.js"></script>
+    <script type="text/javascript" src="src/component/statusbar.js"></script>
+    <script type="text/javascript" src="src/component/navigationbar.js"></script>
+    <script type="text/javascript" src="src/component/editor.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
+
+</head>
+<body class="jui">
+
+<div class="app"></div>
+
+
+<script>
+    jui.ready(["app.builder"], function(builder) {
+        builder(".app", {
+            toolbar: [],
+            toolbuttons : [],
+            statusbar : [],
+            navigationbar : []
+        });
+    })
+</script>
+
+</body>
+</html>
