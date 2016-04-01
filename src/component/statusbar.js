@@ -13,8 +13,10 @@ jui.defineUI("app.component.statusbar", [], function () {
 
 	Statusbar.setup = function () {
 		return {
-			height: 50,
+			height: 30,
 			style : {
+				padding:5,
+				'box-sizing' : 'border-box',
 				position: 'absolute',
 				background: 'gray'
 			}

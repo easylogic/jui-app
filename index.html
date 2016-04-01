@@ -32,12 +32,7 @@
 
 <script>
     jui.ready(["app.builder"], function(builder) {
-        builder(".app", {
-            toolbar: [],
-            toolbuttons : [],
-            statusbar : [],
-            navigationbar : []
-        });
+        window.app = builder(".app");
     })
 </script>
 

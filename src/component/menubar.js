@@ -14,6 +14,8 @@ jui.defineUI("app.component.menubar", [], function () {
 		return {
 			height: 30,
 			style : {
+				padding:5,
+				'box-sizing' : 'border-box',
 				position: 'absolute',
 				background: 'darkblue'
 			}

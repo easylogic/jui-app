@@ -11,8 +11,10 @@ jui.defineUI("app.component.toolbar", [], function () {
 
 	Toolbar.setup = function () {
 		return {
-			height: 50,
+			height: 40,
 			style : {
+				padding:10,
+				'box-sizing' : 'border-box',
 				position: 'absolute',
 				background: 'blue'
 			}
