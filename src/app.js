@@ -6,7 +6,7 @@ jui.defineUI("app.builder", [
 	"app.component.navigationbar",
 	"app.component.editor"
 
-], function (MenuBar, Toolbar, ToolButtons, StatusBar, NavigationBar, Editor) {
+], function (MenuBar, ToolBar, ToolButtons, StatusBar, NavigationBar, Editor) {
 
 	var AppBuilder = function () {
 		var opt, self, root;
@@ -52,10 +52,11 @@ jui.defineUI("app.builder", [
 			_menubar = new MenuBar($menubar, {
 				app : this
 			});
-			_toolbar = new Toolbar($toolbar, {
+			_toolbar = new ToolBar($toolbar, {
 				app : this
 			});
 			_toolbuttons_left = new ToolButtons($toolbuttons_left, {
+				direction : 'left',
 				app : this
 			});
 			_toolbuttons_right = new ToolButtons($toolbuttons_right, {
@@ -147,6 +148,9 @@ jui.defineUI("app.builder", [
 			});
 
 
+			$(window).resize(function() {
+				self.renderView();
+			})
 		}
 
 		this.renderView = function () {
