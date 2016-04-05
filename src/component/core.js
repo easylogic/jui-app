@@ -16,7 +16,6 @@ jui.defineUI("app.component.core", [], function () {
 		this.initUI = function () {
 
 			$(this.root).css(this.options.style).css({
-				overflow: 'hidden',
 				'user-select' : 'none'
 			});
 
@@ -51,7 +50,11 @@ jui.defineUI("app.component.core", [], function () {
 				width : this.rect.width ? this.rect.width :  $(this.root).width(),
 				height : this.rect.height ? this.rect.height :  $(this.root).height()
 			}
-		}
+		};
+
+		this.app = function () {
+			return this.options.app;
+		};
 
 		this.bound = function (x, y, width, height) {
 

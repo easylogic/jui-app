@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <title>JUI App Builder</title>
 
+    <!-- jui css -->
     <link rel="stylesheet" href="node_modules/jui/dist/ui.css" />
     <link rel="stylesheet" href="node_modules/jui/dist/ui-dark.css" />
-    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid.css" />
-    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid-dark.css" />
+<!--    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid.css" />
+    <link rel="stylesheet" href="node_modules/jui-grid/dist/grid-dark.css" />-->
 
+    <!-- jui js -->
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="node_modules/jui-core/dist/core.js"></script>
     <script type="text/javascript" src="node_modules/jui/dist/ui.js"></script>
-    <script type="text/javascript" src="node_modules/jui-chart/dist/chart.js"></script>
-    <script type="text/javascript" src="node_modules/jui-grid/dist/grid.js"></script>
+<!--    <script type="text/javascript" src="node_modules/jui-chart/dist/chart.js"></script>
+    <script type="text/javascript" src="node_modules/jui-grid/dist/grid.js"></script>-->
+
+
+    <!-- Menu -->
+    <script type="text/javascript" src="src/menu/default.js"></script>
 
     <script type="text/javascript" src="src/component/core.js"></script>
     <script type="text/javascript" src="src/component/menubar.js"></script>
@@ -22,17 +28,37 @@
     <script type="text/javascript" src="src/component/statusbar.js"></script>
     <script type="text/javascript" src="src/component/navigationbar.js"></script>
     <script type="text/javascript" src="src/component/editor.js"></script>
+    <script type="text/javascript" src="src/manager/actionmanager.js"></script>
     <script type="text/javascript" src="src/app.js"></script>
 
+
+    <!-- Plugin -->
+    <script type="text/javascript" src="src/plugins/core.js"></script>
+    <script type="text/javascript" src="src/plugins/file/index.js"></script>
+    <style type="text/css">
+    .app-container {
+        position: absolute;
+        left: 30px;
+        right: 30px;
+        top: 30px;
+        bottom: 30px;
+    }
+    </style>
 </head>
 <body class="jui">
 
-<div class="app"></div>
+<div class="app-container">
+    <div class="app"></div>
+</div>
+
+
 
 
 <script>
     jui.ready(["app.builder"], function(builder) {
-        window.app = builder(".app");
+        window.app = builder(".app", {
+            viewport : '.app-container'
+        });
     })
 </script>
 

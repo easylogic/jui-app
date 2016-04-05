@@ -1,20 +1,40 @@
 jui.defineUI("app.builder", [
+
+	// core ui
+	"ui.modal",
+
+	// extension ui
 	"app.component.menubar",
 	"app.component.toolbar",
 	"app.component.toolbuttons",
 	"app.component.statusbar",
 	"app.component.navigationbar",
-	"app.component.editor"
+	"app.component.editor",
+	"app.component.actionmanager"
 
-], function (MenuBar, ToolBar, ToolButtons, StatusBar, NavigationBar, Editor) {
+], function (Modal, MenuBar, Toolbar, ToolButtons, StatusBar, NavigationBar, Editor, ActionManager) {
 
 	var AppBuilder = function () {
 		var opt, self, root;
 		var $menubar, $toolbar, $toolbuttons_left, $toolbuttons_right, $toolbuttons_bottom, $statusbar, $navigationbar, $editor;
 		var _menubar, _toolbar, _toolbuttons_left, _toolbuttons_right, _toolbuttons_bottom, _statusbar, _navigationbar, _editor;
 		var totalWidth, totalHeight;
+		var actionManager;
 
-		var list = [];
+		var list = [], pluginList = [], alertList = [];
+
+		var template = {
+			alert : '' +
+				'<div class="msgbox" style="display: none;">' +
+				'	<div class="head"></div>' +
+				'	<div class="body">' +
+				'		<div class="content"></div>' +
+				'		<div class="buttons" style="text-align: center; margin-top: 45px;">' +
+				'			<a class="btn small close">Close</a>' +
+				'		</div>' +
+				'	</div>' +
+				'</div>'
+		}
 
 		this.init = function () {
 			opt = this.options;
@@ -31,9 +51,65 @@ jui.defineUI("app.builder", [
 			$editor = $("<div class='editor' />").appendTo(this.root);
 
 
+			this.initComponent();
+			this.initPlugin();
 			this.initUI();
 			this.initEvent();
-		}
+		};
+
+		this.initComponent = function () {
+			actionManager = new ActionManager(this);
+		};
+
+		this.initPlugin = function () {
+			var plugins = jui.include("app.plugins");
+			var self = this;
+			Object.keys(plugins).forEach(function(key) {
+				var PluginClass = plugins[key];
+				pluginList.push(new PluginClass(self));
+			});
+
+		};
+
+		this.addAction = function (name, obj) {
+			actionManager.add(name, obj);
+		};
+
+		this.getAction = function (name) {
+			return actionManager.get(name);
+		};
+
+		this.getActionList = function () {
+			return actionManager.list();
+		};
+
+		this.opt = function (key, value) {
+			if (arguments.length == 1) {
+				return this.options[key];
+			} else {
+				this.setOption(key, value);
+			}
+		};
+
+		this.alert = function (message, title) {
+			title = title || "Alert";
+
+			var $template = $(template.alert);
+
+			$template.find(".head").html(title);
+			$template.find(".content").html(message);
+			$template.appendTo('body');
+
+			var alertModal = Modal($template);
+
+			$template.find(".close").on('click', function() {
+				alertModal.hide();
+				$(alertModal.root).remove();
+			});
+
+			alertModal.show();
+
+		};
 
 		this.initUI = function () {
 
@@ -52,7 +128,7 @@ jui.defineUI("app.builder", [
 			_menubar = new MenuBar($menubar, {
 				app : this
 			});
-			_toolbar = new ToolBar($toolbar, {
+			_toolbar = new Toolbar($toolbar, {
 				app : this
 			});
 			_toolbuttons_left = new ToolButtons($toolbuttons_left, {
@@ -241,9 +317,6 @@ jui.defineUI("app.builder", [
 			this.layout();
 			this.publish("resize");
 		}
-
-
-
 	};
 
 	AppBuilder.setup = function () {
@@ -252,8 +325,10 @@ jui.defineUI("app.builder", [
 			toolbar: [],
 			toolbuttons : [],
 			statusbar : [],
+			menubar : [],
 			navigationbar : [],
-			viewport : "body"
+			viewport : "body",
+			menu : "default"
 		}
 	};
 

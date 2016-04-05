@@ -1,4 +1,4 @@
-jui.defineUI("app.component.menubar", [], function () {
+jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 
 	/**
@@ -16,16 +16,126 @@ jui.defineUI("app.component.menubar", [], function () {
 
 
 	var Menubar = function () {
+		var self = this;
 		this.update = function () {
 
 			this.super('update');
 
-			$(this.root).html(this.createMenu());
-		};
+			$(this.root).html(this.createMenuBar());
+		}
+
+		this.createMenuBar = function () {
+			var menuName = "app.menu." + this.app().opt("menu");
+			var menu = jui.include(menuName).menu;
+
+			var $temp = [];
+
+			menu.forEach(function(root) {
+				$temp.push(self.createMenu(root));
+			});
+
+			return $temp;
+		}
+
+		this.createMenu = function (root) {
+			var $btn = $('<button class="btn" type="button"/>').html(root.title).css({
+				'border-radius': 0,
+				'height' : '100%',
+				'position' : 'relative',
+				'border': '0px',
+				'line-height' : '100%',
+				'padding' : '0px 20px',
+				'outline' : 'none',
+				'background-color' : '#181818',
+				'background-image' : 'none'
+			});
+
+			if (root.submenu) {
+				var submenu = this.createSubMenu($btn, root.submenu);
+				$btn.click(function(e) {
+					$btn.after(submenu.root);
+					submenu.show($btn.position().left, $btn.height());
+				});
+			}
+
+			return $btn;
+		}
+
+		this.createSubMenu = function ($btn, submenu) {
+			var self = this;
+			var $dropdown = $("<div class='dropdown' ><ul></ul></div>").css({
+				border: '0px'
+			});
+			var $ul = $dropdown.find("ul").css({
+				'border-radius': '0px',
+				width: 150
+			});
+
+			var dropdownObject = new Dropdown($dropdown, {
+				event : {
+					show : function () {
+						$btn.addClass('active').css({
+							'background-color' : '#4E4E4E'
+						});
+					},
+					hide : function () {
+						$btn.removeClass('active').css({
+							'background-color' : '#181818'
+						});
+					}
+				}
+			});
+
+			submenu.forEach(function(m) {
+				if (m == '-') {
+					$ul.append("<li class='divider' />");
+				} else {
+					var $imgArea = $("<div />").css({
+						display: 'inline-block',
+						position: 'absolute',
+						top:0,
+						bottom:0,
+						left:-10,
+						width:20,
+						'box-sizing' : 'border-box',
+						'background-color': '#181818'
+					});
+					var $a = $("<a />").html(" " + m.title).attr('title', m.description).css({
+						position: 'relative',
+						'padding-left': 12
+					});
+
+					$a.prepend($imgArea);
+
+					if (m.img) {
+						$imgArea.prepend("<img src='" + m.img + "' />");
+					} else if (m.icon) {
+						$imgArea.prepend("<i class='" + m.icon + "'></i> ");
+					}
+
+					var $li = $("<li />").html($a).css({
+						'background-image' : 'none'
+					});
+					$ul.append($li);
+
+					$li.click(function(e) {
+						dropdownObject.hide();
+
+						var action = self.app().getAction(m.action);
+
+						if (action) {
+							action.type = action.type || 'button';
+							if (action.type == 'button') {
+								action.click && action.click(e);
+							}
+						}
 
 
-		this.createMenu = function () {
+					});
+				}
+			});
 
+			return dropdownObject ;
 		}
 
 	};
@@ -35,10 +145,9 @@ jui.defineUI("app.component.menubar", [], function () {
 			menus : [],
 			height: 30,
 			style : {
-				padding:5,
 				'box-sizing' : 'border-box',
 				position: 'absolute',
-				background: 'darkblue'
+				background: '#181818'
 			}
 		};
 	}

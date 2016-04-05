@@ -88,31 +88,35 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 		}
 
 		this.setResizer = function (distX, distY) {
+
+			var maxWidth = this.app().width() - resizerSize;
+			var maxHeight = this.app().height();
+
 			if (this.options.direction == 'left') {
 				this.options.width += distX;
-
-				if (this.options.width > this.options.app.width() - 4) {
-					this.options.width  =  this.options.app.width() - 4;
+				
+				if (this.options.width > maxWidth) {
+					this.options.width  =  maxWidth;
 				}
 
 
 			} else if (this.options.direction == 'right') {
 				this.options.width += distX * -1;
 
-				if (this.options.width > this.options.app.width() - 4) {
-					this.options.width  =  this.options.app.width() - 4;
+				if (this.options.width > maxWidth) {
+					this.options.width  =  maxWidth;
 				}
 
 			} else if (this.options.direction == 'bottom') {
 
 				this.options.height += distY * -1;
 
-				if (this.options.height > this.options.app.height() - 4) {
-					this.options.height  =  this.options.app.height() - 4;
+				if (this.options.height > maxHeight) {
+					this.options.height  =  maxHeight;
 				}
 			}
 
-			this.options.app.resize();
+			this.app().resize();
 		}
 
 		this.isCollapsed = function () {
@@ -159,6 +163,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			height: 200,
 			style : {
 				position: 'absolute',
+				overflow: 'hidden',
 				background: 'pink'
 			}
 		};

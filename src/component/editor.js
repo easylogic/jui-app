@@ -15,7 +15,8 @@ jui.defineUI("app.component.editor", [], function () {
 		return {
 			style : {
 				position: 'absolute',
-				background: 'green'
+				background: 'green',
+				overflow: 'hidden'
 			}
 		};
 	}
