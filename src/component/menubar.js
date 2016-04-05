@@ -146,15 +146,7 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 					$li.click(function(e) {
 						dropdownObject.hide();
 
-						var action = self.app().getAction(m.action);
-
-						if (action) {
-							action.type = action.type || 'button';
-							if (action.type == 'button') {
-								action.click && action.click(e);
-							}
-						}
-
+						self.runAction(m.action);
 
 					});
 				}

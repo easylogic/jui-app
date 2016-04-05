@@ -38,19 +38,13 @@ jui.defineUI("app.component.toolbar", [], function () {
 
 			var action = this.action(root.action);
 
-			var title = action.title || root.title;
-			var img = action.img || root.img;
-			var icon = action.icon || root.icon;
+			var title = root.title || action.title;
+			var img = root.img || action.img;
+			var icon = root.icon || action.icon;
 
 			var content = title;
 
-			if (img) {
-				content = "<img src='" + img + "' />";
-			} else if (icon) {
-				content = "<i class='" + icon + "'></i>";
-			}
-
-			var $btn = $('<button class="btn" type="button"/>').html(content).css({
+			var $btn = $('<button class="btn" type="button"/>').css({
 				'border-radius': 0,
 				'padding' : '0px 8px',
 				'border': '0px',
@@ -61,8 +55,20 @@ jui.defineUI("app.component.toolbar", [], function () {
 				title : title
 			});
 
-			$btn.on('click', function (e) {
-				action.click && action.click(e);
+			if (img) {
+				content = "<img src='" + img + "' style='max-width:100%;max-height:100%' />";
+				$btn.css({
+					padding:0
+				});
+
+			} else if (icon) {
+				content = "<i class='" + icon + "'></i>";
+			}
+
+			$btn.html(content);
+
+			$btn.on('click', function () {
+				self.runAction(root.action);
 			});
 
 			return $btn;

@@ -20,7 +20,8 @@ jui.defineUI("app.component.navigationbar", [], function () {
 				height: '100%',
 				padding: '0px',
 				'border-radius': '0px',
-				'box-sizing' : 'border-box'
+				'box-sizing' : 'border-box',
+				outline : 0
 			});
 
 			var svg = '<svg width="10px" height="'+height+'">' +
@@ -46,7 +47,8 @@ jui.defineUI("app.component.navigationbar", [], function () {
 					height: '100%',
 					padding: '0px 10px',
 					'border-radius': '0px',
-					'box-sizing' : 'border-box'
+					'box-sizing' : 'border-box',
+					outline : 0
 				}).html(title);
 
 				$content.on('click',item.click);

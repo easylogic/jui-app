@@ -60,6 +60,10 @@ jui.defineUI("app.component.core", [], function () {
 			return this.app().getAction(actionName) || {};
 		}
 
+		this.runAction = function (actionName, params, type, context) {
+			return this.app().runAction(actionName, params, type, context);
+		};
+
 		this.bound = function (x, y, width, height) {
 
 			var style = this.root.style;

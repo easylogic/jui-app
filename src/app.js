@@ -75,6 +75,14 @@ jui.defineUI("app.builder", [
 			actionManager.add(name, obj);
 		};
 
+		this.runAction = function (name, params, type, context) {
+			var action = this.getAction(name);
+			var command = action[type||"click"];
+			context = context || this;
+
+			command && command.call(context, params);
+		}
+
 		this.getAction = function (name) {
 			return actionManager.get(name);
 		};
