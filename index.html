@@ -19,7 +19,8 @@
 
 
     <!-- Menu -->
-    <script type="text/javascript" src="src/menu/default.js"></script>
+    <script type="text/javascript" src="src/config/menu/default.js"></script>
+    <script type="text/javascript" src="src/config/toolbar/default.js"></script>
 
     <script type="text/javascript" src="src/component/core.js"></script>
     <script type="text/javascript" src="src/component/menubar.js"></script>
@@ -37,7 +38,7 @@
     <script type="text/javascript" src="src/plugins/file/index.js"></script>
     <style type="text/css">
     .app-container {
-        position: absolute;
+        position: absolute !important;
         left: 30px;
         right: 30px;
         top: 30px;
@@ -57,7 +58,11 @@
 <script>
     jui.ready(["app.builder"], function(builder) {
         window.app = builder(".app", {
-            viewport : '.app-container'
+            viewport : '.app-container',
+            nav : [
+                { title : 'gallery', click : function (e) { app.alert('gallery')} },
+                { title : 'gps', click : function (e) { app.alert('gps')} }
+            ]
         });
     })
 </script>

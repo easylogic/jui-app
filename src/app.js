@@ -100,7 +100,9 @@ jui.defineUI("app.builder", [
 			$template.find(".content").html(message);
 			$template.appendTo('body');
 
-			var alertModal = Modal($template);
+			var alertModal = Modal($template, {
+				target : this.options.viewport
+			});
 
 			$template.find(".close").on('click', function() {
 				alertModal.hide();
@@ -145,9 +147,15 @@ jui.defineUI("app.builder", [
 				direction : 'bottom',
 				collapse : true
 			});
-			_statusbar = new StatusBar($statusbar);
-			_navigationbar = new NavigationBar($navigationbar);
-			_editor = new Editor($editor);
+			_statusbar = new StatusBar($statusbar, {
+				app : this
+			});
+			_navigationbar = new NavigationBar($navigationbar, {
+				app : this
+			});
+			_editor = new Editor($editor, {
+				app : this
+			});
 
 			list = [_menubar, _toolbar, _toolbuttons_left, _toolbuttons_right, _toolbuttons_bottom, _statusbar, _navigationbar, _editor];
 
@@ -322,13 +330,10 @@ jui.defineUI("app.builder", [
 	AppBuilder.setup = function () {
 		return {
 			config :  {},
-			toolbar: [],
-			toolbuttons : [],
-			statusbar : [],
-			menubar : [],
-			navigationbar : [],
 			viewport : "body",
-			menu : "default"
+			menu : "default",
+			toolbar : "default",
+			nav : []
 		}
 	};
 

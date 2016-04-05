@@ -17,12 +17,19 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 	var Menubar = function () {
 		var self = this;
+		var clicked = false;
+
+		this.initEvent = function () {
+			this.super('initEvent');
+		};
+
+
 		this.update = function () {
 
 			this.super('update');
 
 			$(this.root).html(this.createMenuBar());
-		}
+		};
 
 		this.createMenuBar = function () {
 			var menuName = "app.menu." + this.app().opt("menu");
@@ -52,10 +59,21 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 			if (root.submenu) {
 				var submenu = this.createSubMenu($btn, root.submenu);
-				$btn.click(function(e) {
+				$btn.on('click', function(e) {
 					$btn.after(submenu.root);
 					submenu.show($btn.position().left, $btn.height());
+					clicked = true;
 				});
+
+				$btn.on('mouseover', function(e) {
+					if (clicked) {
+						$btn.after(submenu.root);
+						submenu.show($btn.position().left, $btn.height());
+					}
+
+				});
+
+
 			}
 
 			return $btn;
@@ -68,7 +86,7 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 			});
 			var $ul = $dropdown.find("ul").css({
 				'border-radius': '0px',
-				width: 150
+				width: 200
 			});
 
 			var dropdownObject = new Dropdown($dropdown, {
@@ -111,11 +129,18 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 						$imgArea.prepend("<img src='" + m.img + "' />");
 					} else if (m.icon) {
 						$imgArea.prepend("<i class='" + m.icon + "'></i> ");
+					} else {
+						$imgArea.hide();
 					}
+
+					var $shortcut = $("<span />").html(m.shortcut).css({
+						float: 'right'
+					});
+
 
 					var $li = $("<li />").html($a).css({
 						'background-image' : 'none'
-					});
+					}).append($shortcut);
 					$ul.append($li);
 
 					$li.click(function(e) {

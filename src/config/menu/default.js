@@ -4,7 +4,7 @@ jui.define("app.menu.default", [], function () {
         {
           title : "File",
           submenu : [
-            { title : 'Open File..', action : "file:open" },
+            { title : 'Open File..', action : "file:open", shortcut : "ALT+O" },
             '-',
             { title : 'Save..', action : "file:save" }
           ]

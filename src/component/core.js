@@ -56,6 +56,10 @@ jui.defineUI("app.component.core", [], function () {
 			return this.options.app;
 		};
 
+		this.action = function (actionName) {
+			return this.app().getAction(actionName) || {};
+		}
+
 		this.bound = function (x, y, width, height) {
 
 			var style = this.root.style;
