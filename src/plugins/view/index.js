@@ -3,13 +3,15 @@ jui.define("app.plugins.view", [], function () {
 
        app.addAction("view:toggle-toolbar", {
            click : function () {
-               app.emit("toggle", "toolbar");
+               //app.emit("toggle", "toolbar");
+               app.config.toggle("layout:show.toolbar");
            }
        });
 
        app.addAction("view:toggle-navigationbar", {
            click : function () {
-               app.emit("toggle", "navigationbar");
+               //app.emit("toggle", "navigationbar");
+               app.config.toggle("layout:show.navigationbar");
            }
        });
 
@@ -21,7 +23,8 @@ jui.define("app.plugins.view", [], function () {
 
        app.addAction("view:toggle-statusbar", {
            click : function () {
-               app.emit("toggle", "statusbar");
+               //app.emit("toggle", "statusbar");
+               app.config.toggle("layout:show.statusbar");
            }
        });
    };

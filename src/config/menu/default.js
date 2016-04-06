@@ -21,10 +21,10 @@ jui.define("app.menu.default", [], function () {
         {
           title : "View",
           submenu : [
-            { type : 'checkbox', title : "Tool Bar", checked : function(app) {  return !app.isHide("toolbar");}, action : "view:toggle-toolbar"},
+            { type : 'checkbox', title : "Tool Bar", config : "layout:show.toolbar", action : "view:toggle-toolbar"},
             { type : 'checkbox', title : "Tool Buttons", checked : true, action : "view:toggle-toolbuttons"},
-            { type : 'checkbox', title : "Navigation Bar", checked : function(app) {  return !app.isHide("navigationbar");}, action : "view:toggle-navigationbar"},
-            { type : 'checkbox', title : "Status Bar", checked : function(app) {  return !app.isHide("statusbar");}, action : "view:toggle-statusbar"}
+            { type : 'checkbox', title : "Navigation Bar", config : "layout:show.navigationbar", action : "view:toggle-navigationbar"},
+            { type : 'checkbox', title : "Status Bar", config : "layout:show.statusbar", action : "view:toggle-statusbar"}
           ]
         }
       ]

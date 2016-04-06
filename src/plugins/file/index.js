@@ -1,6 +1,10 @@
 jui.define("app.plugins.file", [], function () {
    var FilePlugin = function (app) {
 
+       app.config.on("layout:show.toolbar", function(newValue, oldValue) {
+
+       });
+
        app.addAction("file:open", {
            title : "File",
            description : "",

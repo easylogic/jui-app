@@ -10,16 +10,22 @@ jui.defineUI("app.builder", [
 	"app.component.statusbar",
 	"app.component.navigationbar",
 	"app.component.editor",
-	"app.component.actionmanager"
+	"app.manager.actionmanager",
+	"app.manager.configmanager"
 
-], function (Modal, MenuBar, Toolbar, ToolButtons, StatusBar, NavigationBar, Editor, ActionManager) {
+], function (
+		Modal,
+		MenuBar, Toolbar, ToolButtons, StatusBar, NavigationBar, Editor,
+
+		ActionManager, ConfigManager
+) {
 
 	var AppBuilder = function () {
 		var opt, self, root;
 		var $menubar, $toolbar, $toolbuttons_left, $toolbuttons_right, $toolbuttons_bottom, $statusbar, $navigationbar, $editor;
 		var _menubar, _toolbar, _toolbuttons_left, _toolbuttons_right, _toolbuttons_bottom, _statusbar, _navigationbar, _editor;
 		var totalWidth, totalHeight;
-		var actionManager;
+		var actionManager, configManager;
 
 		var list = [], pluginList = [], alertList = [];
 
@@ -61,6 +67,7 @@ jui.defineUI("app.builder", [
 
 		this.initComponent = function () {
 			actionManager = new ActionManager(this);
+			this.config = configManager = new ConfigManager(this);
 		};
 
 		this.initPlugin = function () {
@@ -241,6 +248,24 @@ jui.defineUI("app.builder", [
 				self.resize();
 			});
 
+			configManager.on("layout:show.toolbar", function (value) {
+				_toolbar.toggle(value);
+				self.resize();
+			});
+
+			configManager.on("layout:show.navigationbar", function (value) {
+				_navigationbar.toggle(value);
+				self.resize();
+			});
+
+			configManager.on("layout:show.statusbar", function (value) {
+				_statusbar.toggle(value);
+				self.resize();
+			});
+
+			configManager.dispatch("layout:show.toolbar", !!configManager.get("layout:show.toolbar"));
+			configManager.dispatch("layout:show.navigationbar", !!configManager.get("layout:show.navigationbar"));
+			configManager.dispatch("layout:show.statusbar", !!configManager.get("layout:show.statusbar"));
 
 			$(window).resize(function() {
 				self.renderView();
@@ -258,23 +283,23 @@ jui.defineUI("app.builder", [
 			for(var i = 0, len = list.length; i < len; i++) {
 				list[i].emit(type, args);
 			}
-		}
+		};
 
 		this.width = function () {
 			return totalWidth;
-		}
+		};
 
 		this.height = function () {
 			return totalHeight;
-		}
+		};
 
 		this.isHide = function (type) {
-			if (type == 'toolbar') return _toolbar.isHide();
-			if (type == 'navigationbar') return _navigationbar.isHide();
-			if (type == 'statusbar') return _statusbar.isHide();
+			if (type == 'toolbar') return !configManager.get("layout:show.toolbar");
+			if (type == 'navigationbar') return !configManager.get("layout:show.navigationbar");
+			if (type == 'statusbar') return !configManager.get("layout:show.statusbar");
 
 			return false;
-		}
+		};
 
 
 		this.layout = function () {
@@ -285,14 +310,14 @@ jui.defineUI("app.builder", [
 			_menubar.bound(0, 0, totalWidth, _menubar.options.height);
 			top += _menubar.options.height;
 
-			if (!_toolbar.isHide()) {
+			if (!this.isHide("toolbar")) {
 				// resize toolbar
 				_toolbar.bound(0, top, totalWidth, _toolbar.options.height);
 				top += _toolbar.options.height;
 			}
 
 
-			if (!_navigationbar.isHide()) {
+			if (!this.isHide("navigationbar")) {
 				// resize navigationbar
 				_navigationbar.bound(0, top, totalWidth, _navigationbar.options.height);
 				top += _navigationbar.options.height;
@@ -305,7 +330,7 @@ jui.defineUI("app.builder", [
 				centerHeight -= _toolbuttons_bottom.options.height;
 			}
 
-			if (!_statusbar.isHide()) {
+			if (!this.isHide("statusbar")) {
 				centerHeight -= _statusbar.options.height;
 			}
 
@@ -332,7 +357,7 @@ jui.defineUI("app.builder", [
 				top += _toolbuttons_bottom.options.height;
 			}
 
-			if (!_statusbar.isHide()) {
+			if (!this.isHide("statusbar")) {
 				// resie statusbar
 				_statusbar.bound(0, top, totalWidth, _statusbar.options.height);
 			}

@@ -89,16 +89,15 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 			var checked = m.checked;
 
-			if (typeof m.checked == 'function') {
-				checked = checked(this.app());
+			if (m.config) {
+				checked = this.app().config.get(m.config);
 			}
 
 			var $imgArea = $li.find(".img-area");
 			$imgArea.toggle(!!checked);
 
-			$li.click(function () {
-				m.checked = !checked;
-				$imgArea.toggle(m.checked);
+			this.app().config.on(m.config, function (value) {
+				$imgArea.toggle(value);
 			});
 
 			return $li;

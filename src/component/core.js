@@ -38,9 +38,9 @@ jui.defineUI("app.component.core", [], function () {
 			$(this.root).show();
 		}
 
-		this.toggle = function () {
+		this.toggle = function (value) {
 			this.options.hide = !this.options.hide;
-			$(this.root).toggle();
+			$(this.root).toggle(value);
 		}
 
 		this.getRect = function () {

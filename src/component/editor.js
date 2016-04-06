@@ -1,7 +1,7 @@
 jui.defineUI("app.component.editor", [], function () {
 
 	var Editor = function () {
-		var self;
+		var self = this ;
 		this.initEvent = function () {
 			this.super('initEvent');
 

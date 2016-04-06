@@ -1,4 +1,4 @@
-jui.define("app.component.actionmanager", [], function () {
+jui.define("app.manager.actionmanager", [], function () {
     var ActionManager = function () {
         var list = [];
         var keys = {};
