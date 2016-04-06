@@ -80,7 +80,6 @@ jui.defineUI("app.builder", [
 				var pluginObject = new PluginClass(self);
 				pluginList.push(pluginObject);
 			});
-
 		};
 
 		this.action = function (name, obj) {
@@ -89,7 +88,6 @@ jui.defineUI("app.builder", [
 			} else {
 				actionManager.add(name, obj);
 			}
-
 		};
 
 		this.run = function (name, params, type, context) {
@@ -98,7 +96,7 @@ jui.defineUI("app.builder", [
 			context = context || this;
 
 			command && command.call(context, params);
-		}
+		};
 
 		this.opt = function (key, value) {
 			if (arguments.length == 1) {
