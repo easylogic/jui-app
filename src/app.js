@@ -77,7 +77,8 @@ jui.defineUI("app.builder", [
 			var self = this;
 			Object.keys(plugins).forEach(function(key) {
 				var PluginClass = plugins[key];
-				pluginList.push(new PluginClass(self));
+				var pluginObject = new PluginClass(self);
+				pluginList.push(pluginObject);
 			});
 
 		};

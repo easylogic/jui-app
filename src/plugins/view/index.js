@@ -1,25 +1,29 @@
 jui.define("app.plugins.view", [], function () {
    var ViewPlugin = function (app) {
 
-       app.action("view:toggle-toolbar", {
+       this.namespace = "view";
+
+       this.init(app);
+
+       this.action("toggle-toolbar", {
            click : function () {
                app.config.toggle("layout:show.toolbar");
            }
        });
 
-       app.action("view:toggle-navigationbar", {
+       this.action("toggle-navigationbar", {
            click : function () {
                app.config.toggle("layout:show.navigationbar");
            }
        });
 
-       app.action("view:toggle-toolbuttons", {
+       this.action("toggle-toolbuttons", {
            click : function () {
                app.config.toggle("layout:show.toolbuttons");
            }
        });
 
-       app.action("view:toggle-statusbar", {
+       this.action("toggle-statusbar", {
            click : function () {
                app.config.toggle("layout:show.statusbar");
            }

@@ -1,7 +1,11 @@
 jui.define("app.plugins.file", [], function () {
    var FilePlugin = function (app) {
 
-       app.action("file:open", {
+       this.namespace = "file";
+
+       this.init(app);
+
+       this.action("open", {
            title : "File",
            description : "",
            icon : 'icon-report2',
@@ -10,7 +14,7 @@ jui.define("app.plugins.file", [], function () {
            }
        });
 
-       app.action("file:save", {
+       this.action("save", {
            title : 'Save',
            click : function () {
                app.alert('this is save function');

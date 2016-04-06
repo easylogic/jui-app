@@ -10,24 +10,24 @@ jui.define("app.plugin.core", [], function () {
        };
 
        this.getName = function (name) {
-           return [this.name, name].join(":");
+           return [this.namespace, name].join(":");
        }
 
        /**
-        * ¾×¼Ç µî·Ï
+        * ì•¡ì…˜ ë“±ë¡
         */
        this.action = function (name, objOrCallback) {
 
            if (arguments.length == 1) {
-               return _app.getAction(this.getName(name));
+               return _app.action(this.getName(name));
            }
 
 
            if (typeof objOrCallback == 'function') {
-               objOrCallback = objOrCallback.call(this);        // ÇÔ¼ö´Â Á¤ÇØÁø °´Ã¼¸¦ ¸®ÅÏÇÑ´Ù.
+               objOrCallback = objOrCallback.call(this);        // í•¨ìˆ˜ëŠ” ì •í•´ì§„ ê°ì²´ë¥¼ ë¦¬í„´í•œë‹¤.
            }
 
-            _app.addAction(this.getName(name), objOrCallback || {});
+            _app.action(this.getName(name), objOrCallback || {});
        }
 
        this.initPlugin = function () {
