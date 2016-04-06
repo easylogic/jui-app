@@ -85,7 +85,6 @@ jui.defineUI("app.component.core", [], function () {
 	Core.setup = function () {
 		return {
 			app : null,
-			hide : false,
 			style : {
 				position: 'absolute',
 				background: 'yellow'
