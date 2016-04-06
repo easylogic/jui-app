@@ -18,8 +18,6 @@ jui.defineUI("app.component.core", [], function () {
 			$(this.root).css(this.options.style).css({
 				'user-select' : 'none'
 			});
-
-			this.update();
 		};
 
 		this.update = function () {

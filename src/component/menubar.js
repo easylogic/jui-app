@@ -21,6 +21,10 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 		this.initEvent = function () {
 			this.super('initEvent');
+
+			this.app().on('init', function () {
+				self.update();
+			})
 		};
 
 
@@ -79,6 +83,74 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 			return $btn;
 		}
 
+		this.createCheckBox = function (m, dropdownObject) {
+			m.icon = "icon-check";
+			var $li = this.createButton(m, dropdownObject);
+
+			var checked = m.checked;
+
+			if (typeof m.checked == 'function') {
+				checked = checked(this.app());
+			}
+
+			var $imgArea = $li.find(".img-area");
+			$imgArea.toggle(!!checked);
+
+			$li.click(function () {
+				m.checked = !checked;
+				$imgArea.toggle(m.checked);
+			});
+
+			return $li;
+		};
+
+		this.createDivider = function (m, dropdownObject) {
+			return "<li class='divider' />";
+		};
+
+		this.createButton = function (m, dropdownObject) {
+			var $imgArea = $("<div class='img-area' />").css({
+				display: 'inline-block',
+				position: 'absolute',
+				top:0,
+				bottom:0,
+				left:-10,
+				width:20,
+				padding:'0px 5px',
+				'box-sizing' : 'border-box',
+				'background-color': '#181818'
+			});
+			var $a = $("<a />").html(" " + m.title).attr('title', m.description).css({
+				position: 'relative',
+				'padding-left': 12
+			});
+
+			$a.prepend($imgArea);
+
+			if (m.img) {
+				$imgArea.prepend("<img src='" + m.img + "' />");
+			} else if (m.icon) {
+				$imgArea.prepend("<i class='" + m.icon + "'></i> ");
+			} else {
+				$imgArea.hide();
+			}
+
+			var $shortcut = $("<span />").html(m.shortcut).css({
+				float: 'right'
+			});
+
+			var $li = $("<li />").html($a).css({
+				'background-image' : 'none'
+			}).append($shortcut);
+
+			$li.click(function(e) {
+				dropdownObject.hide();
+				self.runAction(m.action);
+			});
+
+			return $li;
+		}
+
 		this.createSubMenu = function ($btn, submenu) {
 			var self = this;
 			var $dropdown = $("<div class='dropdown' ><ul></ul></div>").css({
@@ -106,49 +178,12 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 			submenu.forEach(function(m) {
 				if (m == '-') {
-					$ul.append("<li class='divider' />");
+					$ul.append(self.createDivider(m, dropdownObject));
+				} else if (m.type == 'checkbox') {
+					$ul.append(self.createCheckBox(m, dropdownObject));
 				} else {
-					var $imgArea = $("<div />").css({
-						display: 'inline-block',
-						position: 'absolute',
-						top:0,
-						bottom:0,
-						left:-10,
-						width:20,
-						'box-sizing' : 'border-box',
-						'background-color': '#181818'
-					});
-					var $a = $("<a />").html(" " + m.title).attr('title', m.description).css({
-						position: 'relative',
-						'padding-left': 12
-					});
+					$ul.append(self.createButton(m, dropdownObject));
 
-					$a.prepend($imgArea);
-
-					if (m.img) {
-						$imgArea.prepend("<img src='" + m.img + "' />");
-					} else if (m.icon) {
-						$imgArea.prepend("<i class='" + m.icon + "'></i> ");
-					} else {
-						$imgArea.hide();
-					}
-
-					var $shortcut = $("<span />").html(m.shortcut).css({
-						float: 'right'
-					});
-
-
-					var $li = $("<li />").html($a).css({
-						'background-image' : 'none'
-					}).append($shortcut);
-					$ul.append($li);
-
-					$li.click(function(e) {
-						dropdownObject.hide();
-
-						self.runAction(m.action);
-
-					});
 				}
 			});
 

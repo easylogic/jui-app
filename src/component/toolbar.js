@@ -2,6 +2,16 @@ jui.defineUI("app.component.toolbar", [], function () {
 
 	var Toolbar = function () {
 		var self = this;
+
+
+		this.initEvent = function () {
+			this.super('initEvent');
+
+			this.app().on('init', function () {
+				self.update();
+			})
+		};
+
 		this.update = function () {
 
 			this.super('update');

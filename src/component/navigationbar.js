@@ -3,6 +3,16 @@ jui.defineUI("app.component.navigationbar", [], function () {
 	var NavigationBar = function () {
 		var self = this;
 
+
+		this.initEvent = function () {
+			this.super('initEvent');
+
+			this.app().on('init', function () {
+				self.update();
+			})
+		};
+
+
 		this.update = function () {
 
 			this.super('update');
@@ -73,8 +83,8 @@ jui.defineUI("app.component.navigationbar", [], function () {
 				'box-sizing' : 'border-box',
 				position: 'absolute',
 				background: '#4e4e4e',
-				'border-top': '1px solid black',
-				'border-bottom': '1px solid black'
+				'border-top': '1px solid #666666',
+				'border-bottom': '1px solid #666666'
 			}
 		};
 	}

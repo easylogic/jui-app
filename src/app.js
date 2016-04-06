@@ -55,6 +55,8 @@ jui.defineUI("app.builder", [
 			this.initPlugin();
 			this.initUI();
 			this.initEvent();
+
+			this.emit("init");
 		};
 
 		this.initComponent = function () {
@@ -264,6 +266,14 @@ jui.defineUI("app.builder", [
 
 		this.height = function () {
 			return totalHeight;
+		}
+
+		this.isHide = function (type) {
+			if (type == 'toolbar') return _toolbar.isHide();
+			if (type == 'navigationbar') return _navigationbar.isHide();
+			if (type == 'statusbar') return _statusbar.isHide();
+
+			return false;
 		}
 
 

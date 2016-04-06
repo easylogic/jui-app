@@ -7,7 +7,11 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 		var $resizer;
 
 		this.initEvent = function () {
+			this.super('initEvent');
 
+			this.app().on('init', function () {
+				self.update();
+			})
 		};
 
 		this.update = function () {
