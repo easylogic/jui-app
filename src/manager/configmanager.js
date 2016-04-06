@@ -1,6 +1,7 @@
 jui.define("app.manager.configmanager", [], function () {
     var ApplicationConfig = function (app) {
 
+        var self = this;
         var data = {};
         var event = {} ;
 
@@ -64,6 +65,17 @@ jui.define("app.manager.configmanager", [], function () {
             for(var i = 0, len = events.length; i < len; i++) {
                 events[i].call(app, value, oldValue);
             }
+        }
+
+        this.import = function (json) {
+
+            Object.keys(json).forEach(function(key) {
+                self.set(key, json[key], true);
+            })
+        }
+
+        this.export = function () {
+            return data;
         }
     };
 

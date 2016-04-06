@@ -1,11 +1,7 @@
 jui.define("app.plugins.file", [], function () {
    var FilePlugin = function (app) {
 
-       app.config.on("layout:show.toolbar", function(newValue, oldValue) {
-
-       });
-
-       app.addAction("file:open", {
+       app.action("file:open", {
            title : "File",
            description : "",
            icon : 'icon-report2',
@@ -14,7 +10,7 @@ jui.define("app.plugins.file", [], function () {
            }
        });
 
-       app.addAction("file:save", {
+       app.action("file:save", {
            title : 'Save',
            click : function () {
                app.alert('this is save function');

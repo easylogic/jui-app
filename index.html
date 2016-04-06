@@ -60,6 +60,10 @@
 <script>
     jui.ready(["app.builder"], function(builder) {
         window.app = builder(".app", {
+            config : {
+                'layout:show.toolbar' : true,
+                'layout:show.statusbar' : true
+            },
             viewport : '.app-container',
             nav : [
                 { title : 'gallery', click : function (e) { app.alert('gallery')} },

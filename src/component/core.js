@@ -24,22 +24,15 @@ jui.defineUI("app.component.core", [], function () {
 
 		};
 
-		this.isHide = function () {
-			return !!this.options.hide;
-		}
-
 		this.hide = function () {
-			this.options.hide = true;
 			$(this.root).hide();
 		};
 
 		this.show = function () {
-			this.options.hide = false;
 			$(this.root).show();
 		}
 
 		this.toggle = function (value) {
-			this.options.hide = !this.options.hide;
 			$(this.root).toggle(value);
 		}
 
@@ -55,11 +48,11 @@ jui.defineUI("app.component.core", [], function () {
 		};
 
 		this.action = function (actionName) {
-			return this.app().getAction(actionName) || {};
+			return this.app().action(actionName) || {};
 		}
 
-		this.runAction = function (actionName, params, type, context) {
-			return this.app().runAction(actionName, params, type, context);
+		this.run = function (actionName, params, type, context) {
+			return this.app().run(actionName, params, type, context);
 		};
 
 		this.bound = function (x, y, width, height) {

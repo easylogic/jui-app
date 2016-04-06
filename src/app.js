@@ -68,6 +68,8 @@ jui.defineUI("app.builder", [
 		this.initComponent = function () {
 			actionManager = new ActionManager(this);
 			this.config = configManager = new ConfigManager(this);
+
+			this.config.import(this.options.config);
 		};
 
 		this.initPlugin = function () {
@@ -80,25 +82,22 @@ jui.defineUI("app.builder", [
 
 		};
 
-		this.addAction = function (name, obj) {
-			actionManager.add(name, obj);
+		this.action = function (name, obj) {
+			if (arguments.length == 1) {
+				return actionManager.get(name);
+			} else {
+				actionManager.add(name, obj);
+			}
+
 		};
 
-		this.runAction = function (name, params, type, context) {
-			var action = this.getAction(name);
+		this.run = function (name, params, type, context) {
+			var action = this.action(name);
 			var command = action[type||"click"];
 			context = context || this;
 
 			command && command.call(context, params);
 		}
-
-		this.getAction = function (name) {
-			return actionManager.get(name);
-		};
-
-		this.getActionList = function () {
-			return actionManager.list();
-		};
 
 		this.opt = function (key, value) {
 			if (arguments.length == 1) {
@@ -156,13 +155,11 @@ jui.defineUI("app.builder", [
 			});
 			_toolbuttons_right = new ToolButtons($toolbuttons_right, {
 				app : this,
-				direction : 'right',
-				collapse : true
+				direction : 'right'
 			});
 			_toolbuttons_bottom = new ToolButtons($toolbuttons_bottom, {
 				app : this,
-				direction : 'bottom',
-				collapse : true
+				direction : 'bottom'
 			});
 			_statusbar = new StatusBar($statusbar, {
 				app : this
@@ -182,72 +179,6 @@ jui.defineUI("app.builder", [
 		this.initEvent = function () {
 			var self = this;
 
-			this.on('hide', function(target) {
-				switch(target) {
-					case 'toolbar': _toolbar.hide(); break;
-					case 'toolbuttons':
-						_toolbuttons_left.hide();
-						_toolbuttons_right.hide();
-						_toolbuttons_bottom.hide();
-						break;
-					case 'statusbar': _statusbar.hide(); break;
-					case 'navigationbar': _navigationbar.hide(); break;
-				}
-
-				self.resize();
-			});
-
-
-			this.on('show', function(target) {
-				switch(target) {
-					case 'toolbar': _toolbar.show(); break;
-					case 'toolbuttons':
-						_toolbuttons_left.show();
-						_toolbuttons_right.show();
-						_toolbuttons_bottom.show();
-						break;
-					case 'statusbar': _statusbar.show(); break;
-					case 'navigationbar': _navigationbar.show(); break;
-				}
-
-				self.resize();
-			});
-
-			this.on('toggle', function(target) {
-				switch(target) {
-					case 'toolbar': _toolbar.toggle(); break;
-					case 'toolbuttons':
-						_toolbuttons_left.toggle();
-						_toolbuttons_right.toggle();
-						_toolbuttons_bottom.toggle();
-						break;
-					case 'statusbar': _statusbar.toggle(); break;
-					case 'navigationbar': _navigationbar.toggle(); break;
-				}
-
-				self.resize();
-			});
-
-			this.on('collapse', function (target) {
-				switch(target) {
-					case 'right': _toolbuttons_right.collapse(false); break;
-					case 'left': _toolbuttons_left.collapse(false); break;
-					case 'bottom': _toolbuttons_bottom.collapse(false); break;
-				}
-
-				self.resize();
-			});
-
-			this.on('expand', function (target) {
-				switch(target) {
-					case 'right': _toolbuttons_right.expand(false); break;
-					case 'left': _toolbuttons_left.expand(false); break;
-					case 'bottom': _toolbuttons_bottom.expand(false); break;
-				}
-
-				self.resize();
-			});
-
 			configManager.on("layout:show.toolbar", function (value) {
 				_toolbar.toggle(value);
 				self.resize();
@@ -263,9 +194,17 @@ jui.defineUI("app.builder", [
 				self.resize();
 			});
 
+			configManager.on("layout:show.toolbuttons", function (value) {
+				_toolbuttons_left.toggle(value);
+				_toolbuttons_right.toggle(value);
+				_toolbuttons_bottom.toggle(value);
+				self.resize();
+			});
+
 			configManager.dispatch("layout:show.toolbar", !!configManager.get("layout:show.toolbar"));
 			configManager.dispatch("layout:show.navigationbar", !!configManager.get("layout:show.navigationbar"));
 			configManager.dispatch("layout:show.statusbar", !!configManager.get("layout:show.statusbar"));
+			configManager.dispatch("layout:show.toolbuttons", !!configManager.get("layout:show.toolbuttons"));
 
 			$(window).resize(function() {
 				self.renderView();
@@ -297,6 +236,7 @@ jui.defineUI("app.builder", [
 			if (type == 'toolbar') return !configManager.get("layout:show.toolbar");
 			if (type == 'navigationbar') return !configManager.get("layout:show.navigationbar");
 			if (type == 'statusbar') return !configManager.get("layout:show.statusbar");
+			if (type == 'toolbuttons') return !configManager.get("layout:show.toolbuttons");
 
 			return false;
 		};
@@ -326,7 +266,7 @@ jui.defineUI("app.builder", [
 			// resize toolbuttons
 			var centerHeight = totalHeight- top;
 
-			if (!_toolbuttons_bottom.isHide()) {
+			if (!this.isHide("toolbuttons")) {
 				centerHeight -= _toolbuttons_bottom.options.height;
 			}
 
@@ -336,13 +276,11 @@ jui.defineUI("app.builder", [
 
 			var centerWidth = totalWidth;
 			var centerX = 0;
-			if (!_toolbuttons_left.isHide()) {
+			if (!this.isHide("toolbuttons")) {
 				_toolbuttons_left.bound(0, top, _toolbuttons_left.options.width, centerHeight);
 				centerWidth -= _toolbuttons_left.options.width;
 				centerX += _toolbuttons_left.options.width;
-			}
 
-			if (!_toolbuttons_right.isHide()) {
 				_toolbuttons_right.bound(totalWidth - _toolbuttons_right.options.width, top, _toolbuttons_right.options.width, centerHeight);
 				centerWidth -= _toolbuttons_right.options.width;
 			}
@@ -351,7 +289,7 @@ jui.defineUI("app.builder", [
 			_editor.bound(centerX, top, centerWidth, centerHeight);
 			top += centerHeight;
 
-			if (!_toolbuttons_bottom.isHide()) {
+			if (!this.isHide("toolbuttons")) {
 				// resize toolbuttons_bottom
 				_toolbuttons_bottom.bound(0, top, totalWidth, _toolbuttons_bottom.options.height);
 				top += _toolbuttons_bottom.options.height;

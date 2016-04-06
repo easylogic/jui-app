@@ -78,7 +78,7 @@ jui.defineUI("app.component.toolbar", [], function () {
 			$btn.html(content);
 
 			$btn.on('click', function () {
-				self.runAction(root.action);
+				self.run(root.action);
 			});
 
 			return $btn;

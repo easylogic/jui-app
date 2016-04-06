@@ -18,13 +18,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 
 			this.super('update');
 
-			this.initResizer();
-
-			if (this.options.collapse) {
-				this.collapse(false);
-			} else {
-				this.expand(false);
-			}
+			//this.initResizer();
 
 			$(this.root).append("Toolbuttons");
 
@@ -123,48 +117,13 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			this.app().resize();
 		}
 
-		this.isCollapsed = function () {
-			return !!this.options.collapse;
-		}
-
-		this.collapse = function (isNoneResize) {
-			this.options.collapse = true;
-
-			lastWidth = this.options.width;
-			lastHeight = this.options.height;
-
-			this.options.width = collapsedSize;
-			this.options.height = collapsedSize;
-
-			$resizer.hide();
-
-			if (isNoneResize !== false) this.options.app.resize();
-		};
-
-		this.expand = function (isNoneResize) {
-			this.options.collapse = false;
-
-			if (typeof lastWidth  != 'undefined') {
-				this.options.width = lastWidth ;
-			}
-
-			if (typeof lastHeight != 'undefined') {
-				this.options.height = lastHeight;
-			}
-
-			$resizer.show();
-
-			if (isNoneResize !== false) this.options.app.resize();
-		}
-
 	};
 
 	ToolButtons.setup = function () {
 		return {
 			direction : 'left',
-			collapse: false,
-			width: 200,
-			height: 200,
+			width: 20,
+			height: 20,
 			style : {
 				position: 'absolute',
 				overflow: 'hidden',
