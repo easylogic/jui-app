@@ -68,7 +68,6 @@ jui.defineUI("app.builder", [
 		this.initComponent = function () {
 			actionManager = new ActionManager(this);
 			this.config = configManager = new ConfigManager(this);
-
 			this.config.import(this.options.config);
 		};
 
@@ -200,10 +199,10 @@ jui.defineUI("app.builder", [
 				self.resize();
 			});
 
-			configManager.dispatch("layout:show.toolbar", !!configManager.get("layout:show.toolbar"));
-			configManager.dispatch("layout:show.navigationbar", !!configManager.get("layout:show.navigationbar"));
-			configManager.dispatch("layout:show.statusbar", !!configManager.get("layout:show.statusbar"));
-			configManager.dispatch("layout:show.toolbuttons", !!configManager.get("layout:show.toolbuttons"));
+			configManager.dispatch("layout:show.toolbar", configManager.get("layout:show.toolbar"));
+			configManager.dispatch("layout:show.navigationbar", configManager.get("layout:show.navigationbar"));
+			configManager.dispatch("layout:show.statusbar", configManager.get("layout:show.statusbar"));
+			configManager.dispatch("layout:show.toolbuttons", configManager.get("layout:show.toolbuttons"));
 
 			$(window).resize(function() {
 				self.renderView();
