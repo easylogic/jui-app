@@ -18,6 +18,10 @@
     <script type="text/javascript" src="node_modules/jui-grid/dist/grid.js"></script>-->
 
 
+    <!-- config -->
+    <script type="text/javascript" src="src/config/layout.js"></script>
+    <script type="text/javascript" src="src/config/toolbuttons.js"></script>
+
     <!-- Menu -->
     <script type="text/javascript" src="src/config/menu/default.js"></script>
     <script type="text/javascript" src="src/config/toolbar/default.js"></script>
@@ -31,15 +35,14 @@
     <script type="text/javascript" src="src/component/editor.js"></script>
     <script type="text/javascript" src="src/manager/actionmanager.js"></script>
     <script type="text/javascript" src="src/manager/configmanager.js"></script>
+    <script type="text/javascript" src="src/manager/panelmanager.js"></script>
     <script type="text/javascript" src="src/app.js"></script>
-
-    <!-- config -->
-    <script type="text/javascript" src="src/config/layout.js"></script>
 
     <!-- Plugin -->
     <script type="text/javascript" src="src/plugins/core.js"></script>
     <script type="text/javascript" src="src/plugins/file/index.js"></script>
     <script type="text/javascript" src="src/plugins/view/index.js"></script>
+    <script type="text/javascript" src="src/plugins/project/index.js"></script>
     <style type="text/css">
     .app-container {
         position: absolute !important;
@@ -64,6 +67,7 @@
         window.app = builder(".app", {
             config : {
                 'layout:show.toolbar' : true,
+                'layout:show.toolbuttons' : true,
                 'layout:show.statusbar' : true
             },
             viewport : '.app-container',

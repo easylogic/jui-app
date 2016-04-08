@@ -75,6 +75,39 @@ jui.define("app.manager.configmanager", [], function () {
             this.set(name, !this.get(name));
         };
 
+        this.calc = function (name, value) {
+            value  = (typeof value == 'undefined' ? 1 : value );
+            this.set(name, this.get(name) + value);
+        };
+
+        this.each = function (name, callback) {
+            var arr = this.get(name);
+
+            for(var i = 0, len = arr.length; i < len; i++) {
+                callback.call(app, arr[i]);
+            }
+
+        };
+
+        this.push = function (name, item) {
+            var arr = this.get(name);
+            arr.push(item);
+            this.set(name, arr);
+        };
+
+        this.pop = function (name) {
+            var arr = this.get(name);
+            var value = arr.pop(item);
+
+            this.set(name, arr);
+
+            return value;
+        };
+
+        this.length = function (name) {
+            return this.get(name).length;
+        };
+
         this.on = function (name, callback) {
             event[name] = event[name] || [];
             event[name].push(callback);
@@ -100,8 +133,6 @@ jui.define("app.manager.configmanager", [], function () {
 
         this.dispatch = function (name, value, oldValue) {
             var events = event[name] || [];
-
-            console.log(name, value);
 
             for(var i = 0, len = events.length; i < len; i++) {
                 events[i].call(app, value, oldValue);

@@ -11,13 +11,14 @@ jui.defineUI("app.builder", [
 	"app.component.navigationbar",
 	"app.component.editor",
 	"app.manager.actionmanager",
-	"app.manager.configmanager"
+	"app.manager.configmanager",
+	"app.manager.panelmanager"
 
 ], function (
 		Modal,
 		MenuBar, Toolbar, ToolButtons, StatusBar, NavigationBar, Editor,
 
-		ActionManager, ConfigManager
+		ActionManager, ConfigManager, PanelManager
 ) {
 
 	var AppBuilder = function () {
@@ -25,7 +26,7 @@ jui.defineUI("app.builder", [
 		var $menubar, $toolbar, $toolbuttons_left, $toolbuttons_right, $toolbuttons_bottom, $statusbar, $navigationbar, $editor;
 		var _menubar, _toolbar, _toolbuttons_left, _toolbuttons_right, _toolbuttons_bottom, _statusbar, _navigationbar, _editor;
 		var totalWidth, totalHeight;
-		var actionManager, configManager;
+		var actionManager, configManager, panelManager;
 
 		var list = [], pluginList = [], alertList = [];
 
@@ -67,8 +68,12 @@ jui.defineUI("app.builder", [
 
 		this.initComponent = function () {
 			actionManager = new ActionManager(this);
+			panelManager = new PanelManager(this);
+
 			this.config = configManager = new ConfigManager(this);
 			this.config.import(this.options.config);
+
+
 		};
 
 		this.initPlugin = function () {
@@ -86,6 +91,14 @@ jui.defineUI("app.builder", [
 				return actionManager.get(name);
 			} else {
 				actionManager.add(name, obj);
+			}
+		};
+
+		this.panel = function (name, obj) {
+			if (arguments.length == 1) {
+				return panelManager.get(name);
+			} else {
+				panelManager.add(name, obj);
 			}
 		};
 

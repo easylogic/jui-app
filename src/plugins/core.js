@@ -30,6 +30,18 @@ jui.define("app.plugin.core", [], function () {
             _app.action(this.getName(name), objOrCallback || {});
        }
 
+       /**
+        * 액션 등록
+        */
+       this.panel = function (name, obj) {
+
+           if (arguments.length == 1) {
+               return _app.panel(this.getName(name));
+           }
+
+           _app.panel(this.getName(name), obj || {});
+       }
+
        this.initPlugin = function () {
 
        }

@@ -20,7 +20,6 @@ jui.define("app.plugins.file", [], function () {
                app.alert('this is save function');
            }
        });
-
    };
 
    return FilePlugin;
