@@ -6,7 +6,7 @@ jui.define("app.plugins.project", [], function () {
         this.init(app);
 
         this.panel("tree", {
-            title : "Project",
+            title : "Project1",
             description : "",
             icon : ""
         });
@@ -18,13 +18,13 @@ jui.define("app.plugins.project", [], function () {
             icon : ""
         });
 
-        app.config.push("toolbuttons:left", { panel : this.getName("tree"), index : 0 });
-        app.config.push("toolbuttons:left", { panel : this.getName("tree"), index : 0 });
-        app.config.push("toolbuttons:left", { panel : this.getName("tree"), index : 0 });
+        app.config.push("toolbuttons:left", this.getName("tree"));
+        app.config.push("toolbuttons:left", this.getName("tree"));
+        app.config.push("toolbuttons:left", this.getName("tree"));
 
-        app.config.push("toolbuttons:right", { panel : this.getName("tree"), index : 0 });
-        app.config.push("toolbuttons:right", { panel : this.getName("tree"), index : 0 });
-        app.config.push("toolbuttons:right", { panel : this.getName("tree"), index : 0 });
+        app.config.push("toolbuttons:right", this.getName("grunt"));
+        app.config.push("toolbuttons:right", this.getName("grunt"));
+        app.config.push("toolbuttons:right", this.getName("grunt"));
 
     };
 

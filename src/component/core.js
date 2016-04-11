@@ -4,6 +4,7 @@ jui.defineUI("app.component.core", [], function () {
 
 		this.init = function () {
 
+			this.$el = $(this.root);
 			this.rect = {};
 			this.initUI();
 			this.initEvent();

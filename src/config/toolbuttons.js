@@ -3,6 +3,10 @@ jui.define("app.config.toolbuttons", [], function () {
         title : "ToolButtons Manager",
         description : "Implements ToolButtons Manager",
         settings : {
+            "drag.object" : {
+              type : 'object',
+              default : {}
+            },
             "left" : {
                 type : "array",
                 default: [],

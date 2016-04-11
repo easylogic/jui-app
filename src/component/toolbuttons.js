@@ -20,7 +20,10 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 
 			//this.initResizer();
 
-			$(this.root).append(this.createToolButtons());
+			var $root = $(this.root);
+
+			$root.attr('droppable', true);
+			$root.append(this.createToolButtons());
 
 		};
 
@@ -44,13 +47,16 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			var $child1 = $("<div />").css({  position: 'absolute' });
 			var $child2 = $("<div />").css({ position: 'absolute' });
 
+			this.setDropEvent($child1);
+			this.setDropEvent($child2);
+
 			// first
 			arr[0].forEach(function(it) { $child1.append(it); })
 
 			// second
 			arr[1].forEach(function(it) { $child2.append(it); })
 
-			$group.append([$child1, $child2]);
+			$group.html([$child1, $child2]);
 
 			var buttonHeight = 100;
 
@@ -96,8 +102,37 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			return $group;
 		};
 
+		this.setDropEvent = function ($el) {
+			$el.on('drop', function (e) {
+				var dragPanel = app.config.get("toolbuttons:drag.object");
+
+				$(e.target).closest('[draggable]').after(dragPanel);
+
+
+				var list = [];
+				$el.children().each(function (i, e) {
+					list.push($(e).data('name'));
+				})
+
+				var name = self.getName(self.options.direction);
+				app.config.set(name, list);
+
+
+
+			});
+
+			$el.on('dragover', function (e) {
+				e.preventDefault();
+				//console.log('over', e);
+			});
+
+			$el.on('dragenter', function (e) {
+				//console.log('enter', e);
+			})
+		}
+
 		this.createPanelButton = function (panelName, panelObject) {
-			var $panel = $('<a class="btn tool-button"/>').css({
+			var $panel = $('<a class="btn tool-button" draggable="true"/>').css({
 				position: 'relative',
 				display: 'inline-block',
 				padding:0,
@@ -110,12 +145,18 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 				'box-sizing': 'border-box',
 				background: '#4e4e4e'
 			});
+			$panel.data('name', panelName);
 			$panel.html(this.createSvgButton(panelObject.title));
 
 			$panel.click(function() {
 				// 패널을 보여주는 action 을 실행하는데 , 문제는 현재 위치를 알고 있어야한다.
 				// 패널의 현재 위치는 어떻게 알 수 있을까?
 				app.run("layout:show.panel", panelName);
+			});
+
+			$panel.on('dragstart', function (e) {
+				e.originalEvent.dataTransfer.setData("panel", panelName);
+				app.config.set("toolbuttons:drag.object", $panel);
 			});
 
 			return $panel;
