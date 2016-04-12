@@ -11,6 +11,10 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 
 			this.app().on('init', function () {
 				self.update();
+			});
+
+			this.app().config.on(this.getName(this.options.direction), function () {
+				self.update();
 			})
 		};
 
@@ -23,7 +27,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			var $root = $(this.root);
 
 			$root.attr('droppable', true);
-			$root.append(this.createToolButtons());
+			$root.html(this.createToolButtons());
 
 		};
 
@@ -36,33 +40,33 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			var width = this.options.width;
 			var height = this.options.height;
 			var name = this.getName(this.options.direction);
-			var arr = [ [], [] ];
+			var arr = [];
 			this.app().config.each(name, function(panelName) {
 				var panelObject = self.app().panel(panelName);
 				// it is action name or plugin
-				arr[panelObject.index || 0].push(self.createPanelButton(panelName, panelObject));
+				arr.push(self.createPanelButton(panelName, panelObject));
 			});
 
 			var $group = $("<div />").css({ width: '100%', height: '100%', position: 'relative' });
 			var $child1 = $("<div />").css({  position: 'absolute' });
-			var $child2 = $("<div />").css({ position: 'absolute' });
+			//var $child2 = $("<div />").css({ position: 'absolute' });
 
 			this.setDropEvent($child1);
-			this.setDropEvent($child2);
+			//this.setDropEvent($child2);
 
 			// first
-			arr[0].forEach(function(it) { $child1.append(it); })
+			arr.forEach(function(it) { $child1.append(it); })
 
 			// second
-			arr[1].forEach(function(it) { $child2.append(it); })
+			//arr[1].forEach(function(it) { $child2.append(it); })
 
-			$group.html([$child1, $child2]);
+			$group.html([$child1/*, $child2*/]);
 
 			var buttonHeight = 100;
 
 			if (this.options.direction == 'left' || this.options.direction == 'right') {
-				$child1.css({ top: 0, left:0, right:0 });
-				$child2.css({ bottom: 0, left:0, right:0 });
+				$child1.css({ top: 0, left:0, right:0, bottom: 0 });
+				//$child2.css({ bottom: 0, left:0, right:0 });
 
 				var deg = "-90deg";
 
@@ -70,7 +74,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 					deg = "90deg";
 				}
 
-				[$child1, $child2].forEach(function($child){
+				[$child1/*, $child2*/].forEach(function($child){
 					$child.children().each(function() {
 						$(this).height(buttonHeight);
 						var $div = $(this).find("div");
@@ -87,10 +91,10 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 				});
 
 			} else if (this.options.direction == 'top' || this.options.direction == 'bottom') {
-				$child1.css({ top: 0, left:0, bottom:0 });
-				$child2.css({ top: 0, bottom:0, right:0 });
+				$child1.css({ top: 0, left:0, bottom:0, right: 0 });
+				//$child2.css({ top: 0, bottom:0, right:0 });
 
-				[$child1, $child2].forEach(function($child){
+				[$child1/*, $child2*/].forEach(function($child){
 					$child.children().each(function() {
 						$(this).width(buttonHeight);
 						var $div = $(this).find("div");
@@ -102,22 +106,33 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			return $group;
 		};
 
+		this.updateList = function ($el, direction) {
+			var list = [];
+			$el.children().each(function (i, e) {
+				list.push($(e).data('name'));
+			})
+
+			var name = self.getName(direction);
+
+			// 배열 재설정 설정하는 순간 이벤트 발생해서 UI 변경
+			app.config.set(name, list);
+		}
+
 		this.setDropEvent = function ($el) {
 			$el.on('drop', function (e) {
 				var dragPanel = app.config.get("toolbuttons:drag.object");
+				var dragDirection = app.config.get("toolbuttons:drag.direction");
 
+				var $target = dragPanel.parent();
 				$(e.target).closest('[draggable]').after(dragPanel);
 
 
-				var list = [];
-				$el.children().each(function (i, e) {
-					list.push($(e).data('name'));
-				})
+				// 방향이 다를 때만 target 을 업데이트
+				if (dragDirection != self.options.direction) {
+					self.updateList($target, dragDirection);
+				}
 
-				var name = self.getName(self.options.direction);
-				app.config.set(name, list);
-
-
+				self.updateList($el, self.options.direction);
 
 			});
 
@@ -157,6 +172,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			$panel.on('dragstart', function (e) {
 				e.originalEvent.dataTransfer.setData("panel", panelName);
 				app.config.set("toolbuttons:drag.object", $panel);
+				app.config.set("toolbuttons:drag.direction", self.options.direction);
 			});
 
 			return $panel;

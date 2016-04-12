@@ -5,6 +5,10 @@ jui.define("app.manager.configmanager", [], function () {
         var data = {};
         var event = {} ;
 
+        this.toList = function () {
+            return data;
+        };
+
         this.get = function (name) {
             var arr = name.split(":");
 

@@ -7,6 +7,10 @@ jui.define("app.config.toolbuttons", [], function () {
               type : 'object',
               default : {}
             },
+            "drag.direction" : {
+                type : 'string',
+                default : "left"
+            },
             "left" : {
                 type : "array",
                 default: [],
