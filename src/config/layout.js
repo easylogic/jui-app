@@ -30,6 +30,34 @@ jui.define("app.config.layout", [], function () {
           type : "boolean",
           default: false,
           order : 3
+        },
+        "show.editor.panel.left": {
+          title : "Show Editor Panel For Left",
+          description : "xxx",
+          type : "boolean",
+          default: false,
+          order : 4
+        },
+        "show.editor.panel.right": {
+          title : "Show Editor Panel For Right",
+          description : "xxx",
+          type : "boolean",
+          default: false,
+          order : 4
+        },
+        "show.editor.panel.top": {
+          title : "Show Editor Panel For top",
+          description : "xxx",
+          type : "boolean",
+          default: false,
+          order : 4
+        },
+        "show.editor.panel.bottom": {
+          title : "Show Editor Panel For bottom",
+          description : "xxx",
+          type : "boolean",
+          default: false,
+          order : 4
         }
       }
   };

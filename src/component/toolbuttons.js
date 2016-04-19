@@ -48,7 +48,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			});
 
 			var $group = $("<div />").css({ width: '100%', height: '100%', position: 'relative' });
-			var $child1 = $("<div />").css({  position: 'absolute' });
+			var $child1 = $("<div />").css({  position: 'absolute' }).addClass('direction-' + this.options.direction);
 			//var $child2 = $("<div />").css({ position: 'absolute' });
 
 			this.setDropEvent($child1);
@@ -124,8 +124,14 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 				var dragDirection = app.config.get("toolbuttons:drag.direction");
 
 				var $target = dragPanel.parent();
-				$(e.target).closest('[draggable]').after(dragPanel);
 
+				var $draggableObject = $(e.target).closest('[draggable]');
+
+				if ($draggableObject.length) {
+					$draggableObject.after(dragPanel);
+				} else {
+					$(e.target).append(dragPanel);
+				}
 
 				// 방향이 다를 때만 target 을 업데이트
 				if (dragDirection != self.options.direction) {
@@ -166,7 +172,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			$panel.click(function() {
 				// 패널을 보여주는 action 을 실행하는데 , 문제는 현재 위치를 알고 있어야한다.
 				// 패널의 현재 위치는 어떻게 알 수 있을까?
-				app.run("layout:show.panel", panelName);
+				app.run("layout:show.panel", panelName, self.options.direction);
 			});
 
 			$panel.on('dragstart', function (e) {
