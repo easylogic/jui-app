@@ -9,7 +9,16 @@ jui.defineUI("app.component.editor", [], function () {
 
 			this.app().on('init', function () {
 				self.update();
+			});
+
+
+			// config 이벤트 설정
+			['left','right','top','bottom'].forEach(function(it) {
+				this.app().config.on("layout:show.editor.panel." + it, function () {
+					self.showPanels();
+				})
 			})
+
 		};
 		this.update = function () {
 
@@ -25,8 +34,8 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'bottom' : '0px',
-					'min-width' : '240px'
+					'min-width' : '240px',
+					background: 'yellow'
 				});
 			}
 			if (!panels.right) {
@@ -34,8 +43,8 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'bottom' : '0px',
-					'min-width' : '240px'
+					'min-width' : '240px',
+					background: 'yellow'
 				});
 			}
 			if (!panels.top) {
@@ -43,8 +52,8 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'right' : '0px',
-					'min-height' : '240px'
+					'min-height' : '240px',
+					background: 'yellow'
 				});
 			}
 			if (!panels.bottom) {
@@ -52,8 +61,8 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'right' : '0px',
-					'min-height': '240px'
+					'min-height': '240px',
+					background: 'yellow'
 				});
 			}
 			if (!panels.content) {
@@ -62,7 +71,8 @@ jui.defineUI("app.component.editor", [], function () {
 					left: 0,
 					right: 0,
 					top: 0,
-					bottom: 0
+					bottom: 0,
+					background: 'red'
 				});
 			}
 
@@ -72,9 +82,10 @@ jui.defineUI("app.component.editor", [], function () {
 		};
 
 		this.showPanels = function () {
+			var self = this;
 
 			['left', 'right', 'top', 'bottom'].forEach(function (direction) {
-				var isShow = this.app().config.get("layout:show.editor.panel." + direction);
+				var isShow = self.app().config.get("layout:show.editor.panel." + direction);
 
 				panels[direction].toggle(isShow);
 
@@ -86,31 +97,52 @@ jui.defineUI("app.component.editor", [], function () {
 		};
 
 		this.resize = function () {
+			var totalWidth = $(this.root).width();
+			var totalHeight = $(this.root).height();
 			var config = this.app().config;
 
 			var top = 0, left = 0, right = 0, bottom = 0;
 			if (config.get('layout:show.editor.panel.top')) {
+
+				panels.top.css({
+					width: totalWidth
+				});
 				top += panel.top.height();
+
 			}
 
 			if (config.get('layout:show.editor.panel.bottom')) {
+
+				panels.bottom.css({
+					width: totalWidth
+				});
 				bottom += panel.bottom.height();
 			}
 
 			if (config.get('layout:show.editor.panel.left')) {
+
+				panels.left.css({
+					top: top,
+					height: totalHeight - top - bottom
+				});
 				left += panel.left.width();
 			}
 
 			if (config.get('layout:show.editor.panel.right')) {
+				panels.right.css({
+					top: top,
+					left : totalWidth - panel.right.width(),
+					height: totalHeight - top - bottom
+				});
 				right += panel.right.width();
 			}
 
 			// set content size
-			panel.content.css({
+			panels.content.css({
 				left : left,
-				right : right,
-				bottom: bottom,
-				top: top
+				top: top,
+				width: totalWidth - left - right,
+				height : totalHeight - top - bottom
 			})
 
 		}
