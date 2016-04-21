@@ -9,7 +9,18 @@ jui.define("app.manager.configmanager", [], function () {
             return data;
         };
 
+        this.name = function (name) {
+            if (typeof name != 'string') {
+                return name.join(".");
+            }
+
+            return name;
+        }
+
         this.get = function (name) {
+
+            name = this.name(name);
+
             var arr = name.split(":");
 
             var key = arr[0];
@@ -55,7 +66,7 @@ jui.define("app.manager.configmanager", [], function () {
         }
 
         this.set = function (name, value, isNotFire) {
-
+            name = this.name(name);
             var arr = name.split(":");
 
             var key = arr[0];
@@ -113,12 +124,17 @@ jui.define("app.manager.configmanager", [], function () {
         };
 
         this.on = function (name, callback) {
+
+            name = this.name(name);
+
             event[name] = event[name] || [];
             event[name].push(callback);
             return callback;
         }
 
         this.off = function (name, callback) {
+            name = this.name(name);
+
             if (arguments.length ==1) {
                 event[name] = null;
                 delete event[name];
@@ -136,6 +152,8 @@ jui.define("app.manager.configmanager", [], function () {
         }
 
         this.dispatch = function (name, value, oldValue) {
+            name = this.name(name);
+
             var events = event[name] || [];
 
             for(var i = 0, len = events.length; i < len; i++) {

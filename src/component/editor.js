@@ -14,7 +14,7 @@ jui.defineUI("app.component.editor", [], function () {
 
 			// config 이벤트 설정
 			['left','right','top','bottom'].forEach(function(it) {
-				this.app().config.on("layout:show.editor.panel." + it, function () {
+				this.config().on(["editor:show" , it], function () {
 					self.showPanels();
 				})
 			})

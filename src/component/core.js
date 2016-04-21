@@ -4,7 +4,7 @@ jui.defineUI("app.component.core", [], function () {
 
 		this.init = function () {
 
-			this.$el = $(this.root);
+			this.$root = $(this.root);
 			this.rect = {};
 			this.initUI();
 			this.initEvent();
@@ -16,7 +16,7 @@ jui.defineUI("app.component.core", [], function () {
 
 		this.initUI = function () {
 
-			$(this.root).css(this.options.style).css({
+			this.$root.css(this.options.style).css({
 				'user-select' : 'none'
 			});
 		};
@@ -43,6 +43,11 @@ jui.defineUI("app.component.core", [], function () {
 				height : this.rect.height ? this.rect.height :  $(this.root).height()
 			}
 		};
+
+
+		this.config = function () {
+			return this.app().config;
+		}
 
 		this.app = function () {
 			return this.options.app;
