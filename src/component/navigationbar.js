@@ -4,10 +4,15 @@ jui.defineUI("app.component.navigationbar", [], function () {
 		var self = this;
 
 
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
+
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			})
 		};
@@ -17,7 +22,7 @@ jui.defineUI("app.component.navigationbar", [], function () {
 
 			this.super('update');
 
-			$(this.root).html(this.createNavigationBar());
+			this.$root.html(this.createNavigationBar());
 		};
 
 		this.createDivider = function () {
@@ -44,7 +49,7 @@ jui.defineUI("app.component.navigationbar", [], function () {
 		};
 
 		this.createNavigationBar = function () {
-			var items = this.app().opt('nav');
+			var items = this.app.opt('nav');
 			var $left = $("<div class='left' />").css({
 				float: 'left',
 				height: '100%'

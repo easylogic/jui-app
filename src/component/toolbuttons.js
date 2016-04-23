@@ -3,17 +3,21 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 	var ToolButtons = function () {
 
 		var self = this;
-		var lastWidth, lastHeight, collapsedSize = 20, resizerSize = 4;
-		var $resizer;
+
+
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
 
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			});
 
-			this.app().config.on(this.getName(this.options.direction), function () {
+			this.config.on(this.getName(this.options.direction), function () {
 				self.update();
 			})
 		};
@@ -22,9 +26,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 
 			this.super('update');
 
-			//this.initResizer();
-
-			var $root = $(this.root);
+			var $root = this.$root;
 
 			$root.attr('droppable', true);
 			$root.html(this.createToolButtons());
@@ -38,35 +40,28 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 		this.createToolButtons = function () {
 
 			var width = this.options.width;
-			var height = this.options.height;
 			var name = this.getName(this.options.direction);
 			var arr = [];
-			this.app().config.each(name, function(panelName) {
-				var panelObject = self.app().panel(panelName);
+			this.config.each(name, function(panelName) {
+				var panelObject = self.app.panel(panelName);
 				// it is action name or plugin
 				arr.push(self.createPanelButton(panelName, panelObject));
 			});
 
 			var $group = $("<div />").css({ width: '100%', height: '100%', position: 'relative' });
-			var $child1 = $("<div />").css({  position: 'absolute' }).addClass('direction-' + this.options.direction);
-			//var $child2 = $("<div />").css({ position: 'absolute' });
+			var $child = $("<div />").css({  position: 'absolute' }).addClass('direction-' + this.options.direction);
 
-			this.setDropEvent($child1);
-			//this.setDropEvent($child2);
+			this.setDropEvent($child);
 
 			// first
-			arr.forEach(function(it) { $child1.append(it); })
+			arr.forEach(function(it) { $child.append(it); })
 
-			// second
-			//arr[1].forEach(function(it) { $child2.append(it); })
-
-			$group.html([$child1/*, $child2*/]);
+			$group.html([$child]);
 
 			var buttonHeight = 100;
 
 			if (this.options.direction == 'left' || this.options.direction == 'right') {
-				$child1.css({ top: 0, left:0, right:0, bottom: 0 });
-				//$child2.css({ bottom: 0, left:0, right:0 });
+				$child.css({ top: 0, left:0, right:0, bottom: 0 });
 
 				var deg = "-90deg";
 
@@ -74,32 +69,29 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 					deg = "90deg";
 				}
 
-				[$child1/*, $child2*/].forEach(function($child){
-					$child.children().each(function() {
-						$(this).height(buttonHeight);
-						var $div = $(this).find("div");
-						$div.width(buttonHeight);
+				$child.children().each(function() {
+					$(this).height(buttonHeight);
+					var $div = $(this).find("div");
+					$div.width(buttonHeight);
 
-						var x = width/2;
-						var y = buttonHeight/2 - width/2;
+					var x = width/2;
+					var y = buttonHeight/2 - width/2;
 
-						$div.css({
-							transform: "translate( " + -(y) + "px, " + y + "px) rotate(" + deg + ")",
-							'transform-origin': 'center center'
-						})
-					});
+					$div.css({
+						transform: "translate( " + -(y) + "px, " + y + "px) rotate(" + deg + ")",
+						'transform-origin': 'center center'
+					})
 				});
 
-			} else if (this.options.direction == 'top' || this.options.direction == 'bottom') {
-				$child1.css({ top: 0, left:0, bottom:0, right: 0 });
-				//$child2.css({ top: 0, bottom:0, right:0 });
 
-				[$child1/*, $child2*/].forEach(function($child){
-					$child.children().each(function() {
-						$(this).width(buttonHeight);
-						var $div = $(this).find("div");
-						$div.width(buttonHeight);
-					});
+			} else if (this.options.direction == 'top' || this.options.direction == 'bottom') {
+				$child.css({ top: 0, left:0, bottom:0, right: 0 });
+
+
+				$child.children().each(function() {
+					$(this).width(buttonHeight);
+					var $div = $(this).find("div");
+					$div.width(buttonHeight);
 				});
 			}
 
@@ -115,7 +107,7 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 			var name = self.getName(direction);
 
 			// 배열 재설정 설정하는 순간 이벤트 발생해서 UI 변경
-			app.config.set(name, list);
+			this.config.set(name, list);
 		}
 
 		this.setDropEvent = function ($el) {
@@ -191,100 +183,6 @@ jui.defineUI("app.component.toolbuttons", [], function () {
 				'text-align': 'center'
 			});
 		}
-
-		this.initResizer = function () {
-			if (!$resizer) {
-				$resizer = $("<div class='resizer' />").appendTo(this.root).css({
-					position: 'absolute',
-					background: 'black',
-				});
-
-				$resizer.on('mousedown', function (e) {
-
-					var startX = e.clientX;
-					var startY = e.clientY;
-
-					function call(moveEvent) {
-						var distX = moveEvent.clientX - startX;
-						var distY = moveEvent.clientY - startY;
-
-						startX = moveEvent.clientX;
-						startY = moveEvent.clientY;
-
-						self.setResizer(distX, distY);
-					};
-
-					function call2(e) {
-						$('body').off('mousemove', call);
-						$('body').off('mouseup', call2);
-					}
-
-					$('body').on('mousemove', call);
-					$('body').on('mouseup', call2);
-				});
-
-
-				if (this.options.direction == 'left') {
-					$resizer.css({
-						right : '0px',
-						top: '0px',
-						bottom : '0px',
-						width : resizerSize,
-						cursor : 'ew-resize'
-					});
-				} else if (this.options.direction == 'right') {
-					$resizer.css({
-						left : '0px',
-						top: '0px',
-						bottom : '0px',
-						width : resizerSize,
-						cursor : 'ew-resize'
-					});
-				} else if (this.options.direction == 'bottom') {
-					$resizer.css({
-						left : '0px',
-						right: '0px',
-						top: '0px',
-						height: resizerSize,
-						cursor : 'ns-resize'
-					});
-				}
-			}
-
-		}
-
-		this.setResizer = function (distX, distY) {
-
-			var maxWidth = this.app().width() - resizerSize;
-			var maxHeight = this.app().height();
-
-			if (this.options.direction == 'left') {
-				this.options.width += distX;
-				
-				if (this.options.width > maxWidth) {
-					this.options.width  =  maxWidth;
-				}
-
-
-			} else if (this.options.direction == 'right') {
-				this.options.width += distX * -1;
-
-				if (this.options.width > maxWidth) {
-					this.options.width  =  maxWidth;
-				}
-
-			} else if (this.options.direction == 'bottom') {
-
-				this.options.height += distY * -1;
-
-				if (this.options.height > maxHeight) {
-					this.options.height  =  maxHeight;
-				}
-			}
-
-			this.app().resize();
-		}
-
 	};
 
 	ToolButtons.setup = function () {

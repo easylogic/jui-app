@@ -24,12 +24,21 @@ jui.define("app.manager.configmanager", [], function () {
             var arr = name.split(":");
 
             var key = arr[0];
-            var ConfigObject = jui.include("app.config." + key);
 
             var config = arr[1];
             data[key] = data[key] || {};
 
-            return data[key][config] || ConfigObject.settings[config].default;
+            if (typeof data[key][config] == 'undefined') {
+                var ConfigObject = jui.include("app.config." + key);
+
+                if (ConfigObject.settings[config]) {
+                    this.set(name, ConfigObject.settings[config].default);
+                } else {
+                    console.error(name + " is not exists.");
+                }
+            }
+
+            return data[key][config];
         };
 
         this.casting = function (value, configInfo) {
@@ -86,14 +95,27 @@ jui.define("app.manager.configmanager", [], function () {
 
         };
 
+        this.has = function (name) {
+            name = this.name(name);
+            var arr = name.split(":");
+            var key = arr[0];
+
+            data[key] = data[key] || {};
+
+            return typeof data[key][config] != 'undefined';
+        }
+
         this.toggle = function (name) {
             this.set(name, !this.get(name));
         };
 
-        this.calc = function (name, value) {
-            value  = (typeof value == 'undefined' ? 1 : value );
+        this.minus = function (name, value) {
+            this.set(name, this.get(name) - value);
+        }
+
+        this.plus = function (name, value) {
             this.set(name, this.get(name) + value);
-        };
+        }
 
         this.each = function (name, callback) {
             var arr = this.get(name);

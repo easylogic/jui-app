@@ -2,19 +2,30 @@ jui.defineUI("app.component.editor", [], function () {
 
 	var Editor = function () {
 		var self = this ;
+		var maxWidth, maxHeight, collapsedSize = 20, resizerSize = 4, halfResizerSize = 2;
+		var $resizer;
+
 		var panels = {};
+
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
 
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			});
 
+			this.on('resize', function () {
+				self.resize();
+			});
 
 			// config 이벤트 설정
 			['left','right','top','bottom'].forEach(function(it) {
-				this.config().on(["editor:show" , it], function () {
+				self.config.on(["editor:show" , it], function () {
 					self.showPanels();
 				})
 			})
@@ -24,7 +35,17 @@ jui.defineUI("app.component.editor", [], function () {
 
 			this.super('update');
 
-			$(this.root).html(this.createEditorPanels());
+			this.$root.html(this.createEditorPanels());
+		};
+
+		this.bound = function (x, y, width, height) {
+			this.super('bound', [ x, y, width, height ]);
+
+			//this.config.set("editor:width", width);
+			//this.config.set("editor:height", height);
+
+			maxHeight = height;
+			maxWidth = width;
 		};
 
 		this.createEditorPanels = function () {
@@ -34,8 +55,9 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'min-width' : '240px',
-					background: 'yellow'
+					background: 'yellowgreen',
+					'overflow' : 'hidden',
+					'z-index' : 999
 				});
 			}
 			if (!panels.right) {
@@ -43,8 +65,9 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'min-width' : '240px',
-					background: 'yellow'
+					background: 'gray',
+					'overflow' : 'hidden',
+					'z-index' : 999
 				});
 			}
 			if (!panels.top) {
@@ -52,8 +75,9 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'min-height' : '240px',
-					background: 'yellow'
+					background: 'cyan',
+					'overflow' : 'hidden',
+					'z-index' : 999
 				});
 			}
 			if (!panels.bottom) {
@@ -61,8 +85,9 @@ jui.defineUI("app.component.editor", [], function () {
 					'position': 'absolute',
 					'left': '0px',
 					'top' : '0px',
-					'min-height': '240px',
-					background: 'yellow'
+					background: 'pink',
+					'overflow' : 'hidden',
+					'z-index' : 999
 				});
 			}
 			if (!panels.content) {
@@ -72,7 +97,9 @@ jui.defineUI("app.component.editor", [], function () {
 					right: 0,
 					top: 0,
 					bottom: 0,
-					background: 'red'
+					background: 'red',
+					'overflow' : 'hidden',
+					'z-index' : 998
 				});
 			}
 
@@ -81,13 +108,49 @@ jui.defineUI("app.component.editor", [], function () {
 			return [panels.left, panels.top, panels.right, panels.bottom, panels.content];
 		};
 
+		this.isShow = function (direction) {
+			var isShow = this.config.get(["editor:show", direction]);
+
+			if (isShow && this.config.length(['editor:panels', direction]) == 0) {
+				isShow = false;
+			}
+
+			return isShow;
+		};
+
+		this.renderPanel = function (direction) {
+			// 저장된 panel 을 그린다
+
+
+			panels[direction].empty();
+			this.config.each(['editor:panels', direction], function (panel) {
+				panels[direction].append(panel);
+				self.initResizer(direction);
+			});
+
+		}
+
 		this.showPanels = function () {
 			var self = this;
 
 			['left', 'right', 'top', 'bottom'].forEach(function (direction) {
-				var isShow = self.app().config.get("layout:show.editor.panel." + direction);
 
-				panels[direction].toggle(isShow);
+				var panel = panels[direction];
+
+				if (!panel) return;
+
+				if (direction == 'left' || direction == 'right') {
+					panel.width(self.config.get(['editor:size', direction]));
+				} else {
+					panel.height(self.config.get(['editor:size', direction]));
+				}
+
+				var isShow = self.isShow(direction);
+				panel.toggle(isShow);
+
+				if (isShow) {
+					self.renderPanel(direction);
+				}
 
 			});
 
@@ -97,54 +160,158 @@ jui.defineUI("app.component.editor", [], function () {
 		};
 
 		this.resize = function () {
-			var totalWidth = $(this.root).width();
-			var totalHeight = $(this.root).height();
-			var config = this.app().config;
+			var totalWidth = maxWidth;
+			var totalHeight = maxHeight;
 
 			var top = 0, left = 0, right = 0, bottom = 0;
-			if (config.get('layout:show.editor.panel.top')) {
-
+			if (this.isShow('top')) {
 				panels.top.css({
 					width: totalWidth
 				});
-				top += panel.top.height();
-
+				top += this.config.get("editor:size.top");
 			}
 
-			if (config.get('layout:show.editor.panel.bottom')) {
-
+			if (this.isShow('bottom')) {
+				var size = this.config.get("editor:size.bottom");
 				panels.bottom.css({
+					top: totalHeight  - size,
 					width: totalWidth
 				});
-				bottom += panel.bottom.height();
+				bottom += size;
 			}
 
-			if (config.get('layout:show.editor.panel.left')) {
-
+			if (this.isShow('left')) {
+				var size = this.config.get("editor:size.left");
 				panels.left.css({
 					top: top,
 					height: totalHeight - top - bottom
 				});
-				left += panel.left.width();
+				left += left;
 			}
 
-			if (config.get('layout:show.editor.panel.right')) {
+			if (this.isShow('right')) {
+				var size = this.config.get("editor:size.right");
 				panels.right.css({
 					top: top,
-					left : totalWidth - panel.right.width(),
+					left : totalWidth - size,
 					height: totalHeight - top - bottom
 				});
-				right += panel.right.width();
+				right += size;
 			}
 
-			// set content size
-			panels.content.css({
-				left : left,
-				top: top,
-				width: totalWidth - left - right,
-				height : totalHeight - top - bottom
-			})
+			if (panels.content) {
+				// set content size
+				panels.content.css({
+					left : left,
+					top: top,
+					width: totalWidth - left - right,
+					height : totalHeight - top - bottom
+				})
+			}
 
+		}
+
+
+		this.initResizer = function (direction) {
+
+			if (!panels[direction].find(".resizer").length) {
+				var $resizer = $("<div class='resizer' />").appendTo(this.root).css({
+					position: 'absolute'
+				});
+
+				$resizer.on('mousedown', function (e) {
+
+					var startX = e.clientX;
+					var startY = e.clientY;
+
+					function call(moveEvent) {
+						var distX = moveEvent.clientX - startX;
+						var distY = moveEvent.clientY - startY;
+
+						startX = moveEvent.clientX;
+						startY = moveEvent.clientY;
+
+						self.setResizer(direction, distX, distY);
+					};
+
+					function call2(e) {
+						$('body').off('mousemove', call);
+						$('body').off('mouseup', call2);
+					}
+
+					$('body').on('mousemove', call);
+					$('body').on('mouseup', call2);
+				});
+
+
+				if (direction == 'left') {
+					$resizer.css({
+						right : -halfResizerSize,
+						top: '0px',
+						bottom : '0px',
+						width : resizerSize,
+						cursor : 'ew-resize'
+					});
+				} else if (direction == 'right') {
+					$resizer.css({
+						left : -halfResizerSize,
+						top: '0px',
+						bottom : '0px',
+						width : resizerSize,
+						cursor : 'ew-resize'
+					});
+				} else if (direction == 'bottom') {
+					$resizer.css({
+						left : '0px',
+						right: '0px',
+						top: -halfResizerSize,
+						height: resizerSize,
+						cursor : 'ns-resize'
+					});
+				} else if (direction == 'top') {
+					$resizer.css({
+						left : '0px',
+						right: '0px',
+						bottom: -halfResizerSize,
+						height: resizerSize,
+						cursor : 'ns-resize'
+					});
+				}
+			}
+
+			panels[direction].append($resizer);
+
+		}
+
+		this.setResizer = function (direction, distX, distY) {
+
+			if (direction == 'left') {
+				var size = this.config.get(['editor:size', direction]) + distX;
+
+				if (size < 0) { size = 0 }
+				else if (maxWidth < size) { size = maxWidth; }
+				panels[direction].width(size);
+			} else if (direction == 'right') {
+				var size = this.config.get(['editor:size', direction]) + distX * -1;
+
+				if (size < 0) { size = 0 }
+				else if (maxWidth < size) { size = maxWidth; }
+				panels[direction].width(size);
+			} else if (direction == 'bottom') {
+				var size = this.config.get(['editor:size', direction]) + distY * -1;
+				if (size < 0) { size = 0 }
+				else if (maxHeight < size) { size = maxHeight; }
+				panels[direction].height(size);
+			} else if (direction == 'top') {
+				var size = this.config.get(['editor:size', direction]) + distY;
+				if (size < 0) { size = 0 }
+				else if (maxHeight < size) { size = maxHeight; }
+				panels[direction].height(size);
+			}
+
+			this.config.set(["editor:size", direction], size);
+
+			this.resize();
 		}
 
 	};
@@ -153,7 +320,6 @@ jui.defineUI("app.component.editor", [], function () {
 		return {
 			style : {
 				position: 'absolute',
-				background: 'green',
 				overflow: 'hidden'
 			}
 		};

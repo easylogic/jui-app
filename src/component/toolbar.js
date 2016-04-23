@@ -4,10 +4,16 @@ jui.defineUI("app.component.toolbar", [], function () {
 		var self = this;
 
 
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
+
+
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			})
 		};
@@ -16,17 +22,16 @@ jui.defineUI("app.component.toolbar", [], function () {
 
 			this.super('update');
 
-			$(this.root).html(this.createToolbar());
+			this.$root.html(this.createToolbar());
 		}
 
 		this.createToolbar = function () {
-			var toolbarName = "app.toolbar." + this.app().opt("toolbar");
+			var toolbarName = "app.toolbar." + this.app.opt("toolbar");
 			var toolbar = jui.include(toolbarName).toolbar;
 
 			var $temp = [];
 
 			toolbar.forEach(function(root) {
-
 				if (root == '-') {
 					var $divider = $("<div />").html("&nbsp;").css({
 						width: '2px',

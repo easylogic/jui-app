@@ -4,10 +4,16 @@ jui.defineUI("app.component.statusbar", [], function () {
 
 		var self = this;
 
+
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
+
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			})
 		};
@@ -16,7 +22,7 @@ jui.defineUI("app.component.statusbar", [], function () {
 
 			this.super('update');
 
-			$(this.root).html("Statusbar");
+			this.$root.html("Statusbar");
 		}
 
 	};

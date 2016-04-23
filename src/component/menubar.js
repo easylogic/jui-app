@@ -19,10 +19,15 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 		var self = this;
 		var clicked = false;
 
+		this.init = function () {
+			self = this;
+			this.super('init');
+		};
+
 		this.initEvent = function () {
 			this.super('initEvent');
 
-			this.app().on('init', function () {
+			this.app.on('init', function () {
 				self.update();
 			})
 		};
@@ -32,11 +37,11 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 
 			this.super('update');
 
-			$(this.root).html(this.createMenuBar());
+			this.$root.html(this.createMenuBar());
 		};
 
 		this.createMenuBar = function () {
-			var menuName = "app.menu." + this.app().opt("menu");
+			var menuName = "app.menu." + this.app.opt("menu");
 			var menu = jui.include(menuName).menu;
 
 			var $temp = [];
@@ -90,13 +95,13 @@ jui.defineUI("app.component.menubar", [ "ui.dropdown" ], function (Dropdown) {
 			var checked = m.checked;
 
 			if (m.config) {
-				checked = this.app().config.get(m.config);
+				checked = this.config.get(m.config);
 			}
 
 			var $imgArea = $li.find(".img-area");
 			$imgArea.toggle(!!checked);
 
-			this.app().config.on(m.config, function (value) {
+			this.config.on(m.config, function (value) {
 				$imgArea.toggle(value);
 			});
 

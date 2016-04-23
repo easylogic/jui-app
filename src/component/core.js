@@ -3,6 +3,8 @@ jui.defineUI("app.component.core", [], function () {
 	var Core = function () {
 
 		this.init = function () {
+			this.app = this.options.app;
+			this.config = this.app.config;
 
 			this.$root = $(this.root);
 			this.rect = {};
@@ -26,15 +28,15 @@ jui.defineUI("app.component.core", [], function () {
 		};
 
 		this.hide = function () {
-			$(this.root).hide();
+			this.$root.hide();
 		};
 
 		this.show = function () {
-			$(this.root).show();
+			this.$root.show();
 		}
 
 		this.toggle = function (value) {
-			$(this.root).toggle(value);
+			this.$root.toggle(value);
 		}
 
 		this.getRect = function () {
@@ -45,20 +47,12 @@ jui.defineUI("app.component.core", [], function () {
 		};
 
 
-		this.config = function () {
-			return this.app().config;
-		}
-
-		this.app = function () {
-			return this.options.app;
-		};
-
 		this.action = function (actionName) {
-			return this.app().action(actionName) || {};
+			return this.app.action(actionName) || {};
 		}
 
 		this.run = function (actionName, params, type, context) {
-			return this.app().run(actionName, params, type, context);
+			return this.app.run(actionName, params, type, context);
 		};
 
 		this.bound = function (x, y, width, height) {
