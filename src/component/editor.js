@@ -10,6 +10,8 @@ jui.defineUI("app.component.editor", [], function () {
 		this.init = function () {
 			self = this;
 			this.super('init');
+
+			this.$root.html(this.createEditorPanels());
 		};
 
 		this.initEvent = function () {
@@ -35,7 +37,8 @@ jui.defineUI("app.component.editor", [], function () {
 
 			this.super('update');
 
-			this.$root.html(this.createEditorPanels());
+			this.showPanels();
+
 		};
 
 		this.bound = function (x, y, width, height) {
@@ -102,8 +105,6 @@ jui.defineUI("app.component.editor", [], function () {
 					'z-index' : 998
 				});
 			}
-
-			this.showPanels();
 
 			return [panels.left, panels.top, panels.right, panels.bottom, panels.content];
 		};
