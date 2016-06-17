@@ -58,9 +58,8 @@ jui.define("app.manager.configmanager", [], function () {
                     return value;
                 case "string":
                     return value + "";
-                    break;
                 case "number":
-                    value = parseFloat(value);
+                    value = +value;
                     if (typeof configInfo.minimum != 'undefined') {
                         if (configInfo.minimum > value) value = configInfo.minimum;
                     }
@@ -68,7 +67,6 @@ jui.define("app.manager.configmanager", [], function () {
                         if (configInfo.maximum < value) value = configInfo.maximum;
                     }
                     return value;
-                    break;
             }
 
             return value;
